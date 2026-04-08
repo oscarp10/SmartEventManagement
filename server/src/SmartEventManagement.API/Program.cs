@@ -18,12 +18,22 @@ builder.Services
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
+var corsExtra = builder.Configuration["Cors:AllowedOrigins"];
+var corsOrigins = new List<string> { "http://localhost:5173", "http://localhost:5174" };
+if (!string.IsNullOrWhiteSpace(corsExtra))
+{
+    foreach (var origin in corsExtra.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries))
+    {
+        corsOrigins.Add(origin);
+    }
+}
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("FrontendDev", policy =>
     {
         policy
-            .WithOrigins("http://localhost:5173", "http://localhost:5174")
+            .WithOrigins(corsOrigins.ToArray())
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
