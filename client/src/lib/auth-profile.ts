@@ -1,5 +1,5 @@
-import type { Role } from "../app-types";
-import type { AuthProfile } from "../types/app-models";
+import type { Role } from "@/app-types";
+import type { AuthProfile } from "@/features/auth/types";
 
 export function toRole(value: unknown): Role {
   if (value === "Admin" || value === 0) return "Admin";

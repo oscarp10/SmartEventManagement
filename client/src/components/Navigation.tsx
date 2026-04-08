@@ -1,5 +1,5 @@
 import { Bell, User, Ticket } from "lucide-react";
-import type { Page, Role } from "../app-types";
+import type { Page, Role } from "@/app-types";
 
 export type NavigationProps = {
   currentPage: Page;

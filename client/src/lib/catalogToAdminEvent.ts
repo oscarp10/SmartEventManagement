@@ -1,6 +1,6 @@
-import type { AdminEvent } from "../components/admin/AdminEventCard";
-import type { EventItem } from "../types/app-models";
-import { resolveEventApprovalStatus } from "./events";
+import type { AdminEvent } from "@/features/dashboard/roles/admin/components/AdminEventCard";
+import type { EventItem } from "@/features/events/types";
+import { resolveEventApprovalStatus } from "@/lib/events";
 
 export function catalogItemToAdminEvent(e: EventItem): AdminEvent {
   const status = resolveEventApprovalStatus(e);

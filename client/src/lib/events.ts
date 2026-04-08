@@ -1,4 +1,4 @@
-import type { NotificationTone } from "../components/dashboard/NotificationsPanel";
+import type { NotificationTone } from "@/features/dashboard";
 
 export type EventApprovalState = "pending" | "approved" | "rejected";
 

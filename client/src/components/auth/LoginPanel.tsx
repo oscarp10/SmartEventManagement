@@ -1,6 +1,6 @@
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { useState, type FormEvent } from "react";
-import { AppleGlyph, GoogleGlyph } from "./SocialGlyphs";
+import { AppleGlyph, GoogleGlyph } from "@/components/auth/SocialGlyphs";
 
 export type LoginPanelProps = {
   email: string;

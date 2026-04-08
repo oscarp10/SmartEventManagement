@@ -1,7 +1,7 @@
 import { Eye, EyeOff, Lock, Mail, User } from "lucide-react";
 import { useState, type FormEvent } from "react";
-import type { Role } from "../../app-types";
-import { AppleGlyph, GoogleGlyph } from "./SocialGlyphs";
+import type { Role } from "@/app-types";
+import { AppleGlyph, GoogleGlyph } from "@/components/auth/SocialGlyphs";
 
 export type SignupPanelProps = {
   fullName: string;

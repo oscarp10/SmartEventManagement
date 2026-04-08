@@ -1,18 +1,17 @@
 import { useMemo, useState } from "react";
 import {
   Calendar,
-  CheckCircle2,
   Heart,
   MapPin,
   Search,
-  ShieldCheck,
   Sparkles,
   Star,
-  Users,
-  Wallet,
-  Headphones
+  Users
 } from "lucide-react";
-import type { Page, PublicEvent } from "../app-types";
+import type { Page, PublicEvent } from "@/app-types";
+import { HomeExploreDetailsModal } from "@/components/home/HomeExploreDetailsModal";
+import { HomeExploreBottomSections } from "@/components/home/HomeExploreBottomSections";
+import { DEFAULT_CATEGORIES, formatEventDate, HERO_BACKGROUND, scrollToFeatured, WHY_EVENTHUB_ITEMS } from "@/components/home/homeExploreConfig";
 
 export type HomeExploreProps = {
   events: PublicEvent[];
@@ -21,16 +20,6 @@ export type HomeExploreProps = {
   onCreateEvent?: () => void;
   isAuthenticated?: boolean;
 };
-
-const DEFAULT_CATEGORIES = ["All", "Technology", "Business", "Networking", "Music", "Art", "Food & Drink"];
-
-/** Full-bleed hero — campus / events atmosphere (Booking.com–style imagery). */
-const HERO_BACKGROUND =
-  "https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=2400&q=85";
-
-function scrollToFeatured() {
-  requestAnimationFrame(() => document.getElementById("featured-events")?.scrollIntoView({ behavior: "smooth" }));
-}
 
 export function HomeExplore({ events, onNavigate, onCreateEvent, isAuthenticated = false }: HomeExploreProps) {
   const [searchQuery, setSearchQuery] = useState("");
@@ -70,6 +59,11 @@ export function HomeExplore({ events, onNavigate, onCreateEvent, isAuthenticated
   const handleCreateClick = () => {
     if (onCreateEvent) onCreateEvent();
     else onNavigate("signup");
+  };
+
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category);
+    scrollToFeatured();
   };
 
   return (
@@ -130,10 +124,7 @@ export function HomeExplore({ events, onNavigate, onCreateEvent, isAuthenticated
                     <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Category</span>
                     <select
                       value={selectedCategory}
-                      onChange={(e) => {
-                        setSelectedCategory(e.target.value);
-                        scrollToFeatured();
-                      }}
+                      onChange={(e) => handleCategoryChange(e.target.value)}
                       className="w-full cursor-pointer border-0 bg-transparent py-1.5 text-sm font-semibold text-slate-900 outline-none focus:ring-0"
                     >
                       {categories.map((c) => (
@@ -192,7 +183,7 @@ export function HomeExplore({ events, onNavigate, onCreateEvent, isAuthenticated
               <button
                 key={category}
                 type="button"
-                onClick={() => setSelectedCategory(category)}
+                onClick={() => handleCategoryChange(category)}
                 className={`whitespace-nowrap rounded-lg px-4 py-1.5 text-sm font-medium transition-all sm:px-5 sm:py-2 ${
                   selectedCategory === category
                     ? "bg-brand-600 text-white shadow-sm"
@@ -232,7 +223,10 @@ export function HomeExplore({ events, onNavigate, onCreateEvent, isAuthenticated
                 tabIndex={0}
                 onClick={() => setSelectedEvent(event)}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") setSelectedEvent(event);
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setSelectedEvent(event);
+                  }
                 }}
               >
                 <div className="relative aspect-[4/3] overflow-hidden">
@@ -265,7 +259,7 @@ export function HomeExplore({ events, onNavigate, onCreateEvent, isAuthenticated
                   </div>
                   <div className="mt-1 flex items-center gap-2 text-sm text-slate-600">
                     <Calendar className="h-4 w-4 shrink-0 text-slate-400" aria-hidden />
-                    <span>{new Date(event.dateTime).toLocaleDateString()}</span>
+                    <span>{formatEventDate(event.dateTime)}</span>
                   </div>
                   <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-4 text-sm">
                     <div className="flex items-center gap-1">
@@ -285,130 +279,21 @@ export function HomeExplore({ events, onNavigate, onCreateEvent, isAuthenticated
         )}
       </section>
 
-      {/* Compact stats — social proof after browse (TryBooking keeps proof light) */}
-      <section className="border-t border-slate-200 bg-slate-50 py-6">
-        <div className="mx-auto grid max-w-7xl gap-3 px-4 sm:grid-cols-3">
-          <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm ring-1 ring-slate-100/70">
-            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Listings</p>
-            <p className="mt-2 inline-flex items-center gap-2 text-sm text-slate-700">
-              <Calendar className="h-4 w-4 text-brand-600" aria-hidden />
-              <strong className="text-slate-900">{totalEvents}</strong>
-            </p>
-          </article>
-          <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm ring-1 ring-slate-100/70">
-            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Capacity tracked</p>
-            <p className="mt-2 inline-flex items-center gap-2 text-sm text-slate-700">
-              <Users className="h-4 w-4 text-brand-600" aria-hidden />
-              <strong className="text-slate-900">{totalAttendees}</strong>
-            </p>
-          </article>
-          <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm ring-1 ring-slate-100/70">
-            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Rating & reviews</p>
-            <p className="mt-2 inline-flex items-center gap-2 text-sm text-slate-700">
-              <Star className="h-4 w-4 text-amber-500" aria-hidden />
-              <strong className="text-slate-900">{avgRating.toFixed(1)}</strong>
-              <span className="text-slate-500">· {totalReviews} reviews</span>
-            </p>
-          </article>
-        </div>
-      </section>
+      <HomeExploreBottomSections
+        totalEvents={totalEvents}
+        totalAttendees={totalAttendees}
+        avgRating={avgRating}
+        totalReviews={totalReviews}
+        whyItems={WHY_EVENTHUB_ITEMS}
+        onCreateClick={handleCreateClick}
+      />
 
-      {/* Why EventHub — moved to end, tighter spacing */}
-      <section className="border-t border-slate-200 bg-white py-10 md:py-12">
-        <div className="mx-auto max-w-7xl px-4">
-          <h2 className="text-center text-xl font-bold text-slate-900 md:text-2xl">Why EventHub</h2>
-          <p className="mx-auto mt-2 max-w-2xl text-center text-sm text-slate-600">
-            Campus ticketing ideas from platforms like{" "}
-            <a href="https://www.trybooking.com/" target="_blank" rel="noopener noreferrer" className="font-medium text-brand-700 hover:underline">
-              TryBooking
-            </a>
-            — simple discovery, no cross-selling in your catalogue, clear roles for KOI.
-          </p>
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              { title: "Approved first", body: "Public grid shows admin-approved events only.", icon: ShieldCheck },
-              { title: "Attendee-friendly", body: "Browse, filter, then sign in to register.", icon: CheckCircle2 },
-              { title: "Fair pricing story", body: "Free listings stay lightweight for student-run events.", icon: Wallet },
-              { title: "Organizer + admin", body: "Draft, review, publish — dashboards per role.", icon: Headphones }
-            ].map((item) => (
-              <article key={item.title} className="rounded-xl border border-slate-200 bg-slate-50/80 p-4">
-                <item.icon className="h-5 w-5 text-brand-600" aria-hidden />
-                <h3 className="mt-2 text-sm font-semibold text-slate-900">{item.title}</h3>
-                <p className="mt-1 text-xs leading-relaxed text-slate-600">{item.body}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="border-t border-slate-200 bg-gradient-brand py-8 text-center text-white">
-        <div className="mx-auto max-w-2xl px-4">
-          <p className="text-sm font-medium text-brand-100">Organizers</p>
-          <h2 className="mt-1 text-lg font-bold md:text-xl">List an event — admin reviews before it goes live</h2>
-          <button
-            type="button"
-            onClick={handleCreateClick}
-            className="mt-4 rounded-lg border border-white/90 bg-white px-5 py-2.5 text-sm font-semibold text-brand-900 shadow-sm transition hover:bg-brand-50"
-          >
-            Create event
-          </button>
-        </div>
-      </section>
-
-      <section className="bg-page py-6 text-center">
-        <p className="mx-auto max-w-xl px-4 text-xs text-slate-500">
-          Built for King&apos;s Own Institute — clear roles, capacity-aware registrations, and support links in the header.
-        </p>
-      </section>
-
-      {selectedEvent ? (
-        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/35 p-4 backdrop-blur-sm">
-          <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-slate-200/80 bg-white shadow-2xl">
-            <div className="relative aspect-[16/8] bg-slate-100">
-              <img src={selectedEvent.imageUrl} alt={selectedEvent.title} className="h-full w-full object-cover" />
-              <button
-                type="button"
-                onClick={() => setSelectedEvent(null)}
-                className="absolute right-3 top-3 rounded-lg bg-white/95 px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-sm"
-              >
-                Close
-              </button>
-            </div>
-            <div className="space-y-4 p-5">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="rounded-full bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-800">{selectedEvent.category}</span>
-                <span className="text-sm font-semibold text-slate-700">{selectedEvent.priceLabel}</span>
-              </div>
-              <h3 className="text-2xl font-bold text-slate-900">{selectedEvent.title}</h3>
-              <p className="text-sm text-slate-600">{selectedEvent.description?.trim() || "No extra description provided by organizer."}</p>
-              <div className="grid gap-2 text-sm text-slate-600 sm:grid-cols-2">
-                <p><span className="font-semibold text-slate-800">Date:</span> {new Date(selectedEvent.dateTime).toLocaleString()}</p>
-                <p><span className="font-semibold text-slate-800">Location:</span> {selectedEvent.location}</p>
-                <p><span className="font-semibold text-slate-800">Capacity:</span> {selectedEvent.capacity ?? "Not specified"}</p>
-                <p><span className="font-semibold text-slate-800">Rating:</span> {selectedEvent.rating.toFixed(1)} ({selectedEvent.reviewCount})</p>
-              </div>
-              {selectedEvent.tags && selectedEvent.tags.length > 0 ? (
-                <div className="flex flex-wrap gap-2">
-                  {selectedEvent.tags.map((t) => (
-                    <span key={`${selectedEvent.id}-${t}`} className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs text-slate-700">
-                      {t}
-                    </span>
-                  ))}
-                </div>
-              ) : null}
-              <div className="pt-2">
-                <button
-                  type="button"
-                  onClick={() => onNavigate(isAuthenticated ? "dashboard" : "login")}
-                  className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700"
-                >
-                  {isAuthenticated ? "Open attendee hub to register" : "Sign in to register"}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      ) : null}
+      <HomeExploreDetailsModal
+        selectedEvent={selectedEvent}
+        onClose={() => setSelectedEvent(null)}
+        onNavigateToRegister={onNavigate}
+        isAuthenticated={isAuthenticated}
+      />
     </div>
   );
 }

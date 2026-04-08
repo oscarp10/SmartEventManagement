@@ -1,6 +1,3 @@
-export const API_BASE =
-  import.meta.env.VITE_API_BASE?.replace(/\/$/, "") ?? "http://localhost:5000";
-
 export const ABOUT_IMAGE =
   "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1800&q=80";
 export const CONTACT_IMAGE =

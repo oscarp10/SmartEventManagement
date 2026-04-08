@@ -1,26 +1,55 @@
-# Server (.NET API)
+# Server Guide
 
-Smart Event Management API — ASP.NET Core 9, EF Core, PostgreSQL, JWT, SignalR.
+This is the ASP.NET Core Web API backend for Smart Event Management.
 
-## Run
+## Stack
 
-From this directory (`server/`):
+- .NET 9 Web API
+- Entity Framework Core
+- PostgreSQL (Npgsql provider)
+- JWT authentication
+- SignalR for realtime updates
+- Swagger/OpenAPI (development)
+
+## Structure
+
+```text
+server/
+├── SmartEventManagement.sln
+└── src/
+    └── SmartEventManagement.API/
+        ├── Controllers/
+        ├── Data/
+        ├── Hubs/
+        ├── Models/
+        ├── Services/
+        ├── Program.cs
+        ├── appsettings.json
+        └── appsettings.Development.json
+```
+
+## Commands
 
 ```bash
+dotnet restore
+dotnet build SmartEventManagement.sln
 dotnet run --project src/SmartEventManagement.API
 ```
 
-## Migrations
+## Configuration
 
-From repository root (`SmartEventManagement/`):
+In `appsettings*.json`:
 
-```bash
-dotnet ef database update --project server/src/SmartEventManagement.API --startup-project server/src/SmartEventManagement.API --context AppDbContext
-```
+- `ConnectionStrings:LocalPostgres`
+- `Auth:Issuer`
+- `Auth:Audience`
+- `Auth:JwtSecret`
+- `Cors:AllowedOrigins` (comma-separated optional extras)
 
-Migrations also apply on API startup (`Database.Migrate()` in `Program.cs`).
+## Runtime Notes
 
-## Docs
+- Migrations are applied on startup.
+- Seed data runs on startup.
+- In development, `/` redirects to `/swagger`.
+- SignalR hub route: `/hubs/events`.
 
-- [Local backend setup](../docs/BACKEND_GUIDES/LOCAL_BACKEND_SETUP.md)
-- [Backend flatten blueprint](../docs/BACKEND_GUIDES/BACKEND_FLATTEN_BLUEPRINT.md)
