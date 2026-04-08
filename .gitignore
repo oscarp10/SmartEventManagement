@@ -1,0 +1,12 @@
+.DS_Store
+Thumbs.db
+
+# Client (also see client/.gitignore)
+client/node_modules/
+client/dist/
+
+# .NET build output
+**/bin/
+**/obj/
+*.user
+*.suo

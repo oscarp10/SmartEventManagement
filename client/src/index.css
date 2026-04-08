@@ -1,0 +1,99 @@
+@import "tailwindcss";
+
+/* Unified “booking marketplace” UI tokens: Booking.com primary blue, neutral shells (Trivago/TryBooking clarity), consistent cards site-wide */
+@theme {
+  --color-brand-50: #e8f1ff;
+  --color-brand-100: #d1e4ff;
+  --color-brand-200: #a3c9ff;
+  --color-brand-300: #75adff;
+  --color-brand-400: #4792ff;
+  --color-brand-500: #1a7fe0;
+  --color-brand-600: #0066cc;
+  --color-brand-700: #0052a3;
+  --color-brand-800: #003d7a;
+  --color-brand-900: #002952;
+  --color-brand-950: #001428;
+  --color-page: #f2f4f7;
+  /* Sparingly: deal / attention accent (Trivago-style), never mixed as second primary */
+  --color-highlight: #e8500e;
+}
+
+@layer utilities {
+  .bg-gradient-navy {
+    background: linear-gradient(135deg, #001a33 0%, #002952 100%);
+  }
+  /** Primary marketing / CTA bands — deep trustworthy blue (Booking-style) */
+  .bg-gradient-brand {
+    background: linear-gradient(135deg, #0052a3 0%, #0066cc 45%, #004487 100%);
+  }
+  /** Page hero wash — light, comparison-friendly (TryBooking / Trivago listing feel) */
+  .bg-hero-soft {
+    background: linear-gradient(180deg, #f5f7fa 0%, #ffffff 55%);
+  }
+  /** Footer strip — dark brand footer like major booking sites */
+  .bg-footer-surface {
+    background: linear-gradient(180deg, #003b95 0%, #002a6b 100%);
+  }
+  .shadow-modern {
+    box-shadow:
+      0 4px 6px -1px rgba(15, 23, 42, 0.08),
+      0 2px 4px -1px rgba(15, 23, 42, 0.04),
+      0 0 0 1px rgba(15, 23, 42, 0.06);
+  }
+  .shadow-modern-lg {
+    box-shadow:
+      0 10px 15px -3px rgba(15, 23, 42, 0.08),
+      0 4px 6px -2px rgba(15, 23, 42, 0.04),
+      0 0 0 1px rgba(15, 23, 42, 0.06);
+  }
+  .shadow-modern-xl {
+    box-shadow:
+      0 20px 25px -5px rgba(15, 23, 42, 0.08),
+      0 10px 10px -5px rgba(15, 23, 42, 0.03),
+      0 0 0 1px rgba(15, 23, 42, 0.06);
+  }
+  .shadow-modern-2xl {
+    box-shadow:
+      0 25px 50px -12px rgba(15, 23, 42, 0.12),
+      0 0 0 1px rgba(15, 23, 42, 0.06);
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .hover-lift {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .hover-lift:hover {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.55s ease-out forwards;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  background: var(--color-page);
+  color: #0f172a;
+}
